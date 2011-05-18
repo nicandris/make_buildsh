@@ -49,11 +49,11 @@ Samsungdev_menu() {
 ##Show all vendors an select one
 ventor_menu
 echo
-echo -n "Select Vendor(1-7): "
+echo -n "Select Vendor(1-8): "
 read vendor
-while [[ $vendor -lt 1 || $vendor -gt 7 ]]; do
+while [[ $vendor -lt 1 || $vendor -gt 8 ]]; do
 	echo "Selection ERROR.."
-	echo -n "Select Vendor(1-7): "
+	echo -n "Select Vendor(1-8): "
 	read vendor
 done
 echo
