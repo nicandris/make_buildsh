@@ -6,10 +6,17 @@ clear
 echo
 echo
 echo
+
+_udev_v="skip"
+_idev_p="skip"
+_incompatible="0"
+
+
 ##FUNCTIONS
 ##
 ##	Prints vendors selection menu
-ventor_menu() {
+
+vendor_menu() {
     echo "VENDORS:"
 	echo 1.	Commitiva
 	echo 2.	Geeksphone
@@ -18,7 +25,9 @@ ventor_menu() {
 	echo 5.	Samsung
 	echo 6.	Viewsonic
 	echo 7.	ZTE
-	echo 8. Emulator
+	echo 8.	LG
+	echo 9. Barnes & Noble
+	echo 10. Emulator
 }
 
 ## Prints HTC devices selection menu
@@ -32,6 +41,7 @@ HTCdev_menu() {
 	echo 6.	Evo 4G
 	echo 7.	Glacier
 	echo 8.	Hero CDMA
+	echo 9.	Hero GSM
 	echo 10.Incredible
 	echo 11.Legend
 	echo 12.Magic
@@ -47,70 +57,54 @@ Samsungdev_menu() {
 	echo "SAMSUNG DEVICES:"
 	echo 1.	Galaxy S
 	echo 2.	Nexus S
+	echo 3.	Captivate
+	echo 4.	Vibrant
 }
+
+## Prints Motorola devices selection menu
+Motodev_menu() {
+	echo "MOTOROLA DEVICES:"
+	echo 1.	Droid
+	echo 2.	Cliq XT
+}
+
+## Prints LG devices selection menu
+LGdev_menu() {
+	echo "LG DEVICES:"
+	echo 1.	G2x
+	echo 2.	Optimus 2X
+}
+
 
 ##VARIABLES: $_vendor , $_device , $_udev_v
 
-##Show all vendors an select one
-ventor_menu
+##Show all vendors to select one
+vendor_menu
 echo
-echo -n "Select Vendor(1-8): "
+echo -n "Select Vendor(1-7): "
 read vendor
-while [[ $vendor -lt 1 || $vendor -gt 8 ]]; do
+while [[ $vendor -lt 1 || $vendor -gt 7 ]]; do
 	echo "Selection ERROR.."
-	echo -n "Select Vendor(1-8): "
+	echo -n "Select Vendor(1-7): "
 	read vendor
 done
 echo
 
 case  $vendor in
+
  1) echo "Vendor=Commitiva, Device=Z71"
 	_vendor="Commtiva"
 	_device="z71"
+	_udev_v="skip"
 	;;
  2) echo "Vendor=Geeksphone, Device=One"
 	_vendor="geeksphone"
 	_device="one"
+	_udev_v="skip"
 	;;
- 4) echo "Vendor=Motorola, Device=Droid"
-	_vendor="motorola"
-	_device="sholes"
-	;;
- 6) echo "Vendor=Viewsonic, Device=G Tablet"
-	_vendor="nvidia"
-	_device="harmony"
-	;;
- 7) echo "Vendor=ZTE, Device=Blade"
-	_vendor="zte"
-	_device="blade"
-	;;
- 5) Samsungdev_menu
-	echo
-	echo -n "Select Device(1-2): "
-	read device
-	while [[ $device -lt 1 || $device -gt 2 ]]; do
-		echo "Selection ERROR.."
-		echo -n "Select Device(1-2): "
-		read device
-	done
-	echo
-	case $device in
-	 1) echo "Vendor=Samsung, Device=Galaxy S"
-		_vendor="samsung"
-		_device="vibrant"
-		;;
-	 2) echo "Vendor=Samsung, Device=Nexus S"
-		_vendor="samsung"
-		_device="crespo"
-		;;
-	esac
-	;;
- 8) echo "For building Emulator images, use the build.sh script from your desktop"
-	echo "Vendor=Generic, Device=Emulator"
-		_vendor="generic"
-		_device="generic"
-	;;
- 3) HTCdev_menu
+
+## Prints HTC devices selection menu
+3) HTCdev_menu
 	echo
 	echo -n "Select Device(1-17): "
 	read device
@@ -132,15 +126,16 @@ case  $vendor in
 	 3) echo "Vendor=HTC, Device=Desire CDMA"
 		_vendor="htc"
 		_device="bravoc"
+		_udev_v="0bb4"
 		;;
 	 4) echo "Vendor=HTC, Device=Desire GSM"
 		_vendor="htc"
 		_device="bravo"
+		_udev_v="0bb4"
 		;;
 	 5) echo "Vendor=HTC, Device=Dream"
 		_vendor="htc"
 		_device="dream_sapphire"
-                _incompatible="dream"
 		;;
 	 6) echo "Vendor=HTC, Device=Evo 4G"
 		_vendor="htc"
@@ -153,6 +148,8 @@ case  $vendor in
 	 8) echo "Vendor=HTC, Device=Hero CDMA"
 		_vendor="htc"
 		_device="heroc"
+		_udev_v="0bb4"
+		_idev_p="0c9a"
 		;;
 	 9) echo "Vendor=HTC, Device=Hero GSM"
 		_vendor="htc"
@@ -161,7 +158,7 @@ case  $vendor in
 	 10) echo "Vendor=HTC, Device=Incredible"
 		_vendor="htc"
 		_device="inc"
-		;;
+	        ;;
 	 11) echo "Vendor=HTC, Device=Legend"
 		_vendor="htc"
 		_device="legend"
@@ -169,7 +166,6 @@ case  $vendor in
 	 12) echo "Vendor=HTC, Device=Magic"
 		_vendor="htc"
 		_device="dream_sapphire"
-                _incompatible="dream"
 		;;
 	 13) echo "Vendor=HTC, Device=Passion"
 		_vendor="htc"
@@ -187,6 +183,7 @@ case  $vendor in
 		;;
 	 16) echo "Vendor=HTC, Device=Wildfire"
 		_vendor="htc"
+		_device="buzz"
 		;;	
          17) echo "Vendor=HTC, Device=Leo"
 		_vendor="htc"
@@ -194,8 +191,99 @@ case  $vendor in
 		;;	
            esac
 	;;
-esac
 
+## Prints Motorolla devices selection menu
+4) Motodev_menu
+	echo
+	echo -n "Select Device(1-2): "
+	read device
+	while [[ $device -lt 1 || $device -gt 2 ]]; do
+		echo "Selection ERROR.."
+		echo -n "Select Device(1-2): "
+		read device
+	done
+	echo
+	case $device in
+	 1) echo "Vendor=Motorola, Device=Droid"
+		_vendor="motorola"
+		_device="sholes"
+		;;
+	 2) echo "Vendor=Motorola, Device=Cliq XT"
+		_vendor="motorola"
+		_device="zeppelin"
+		;;
+	esac
+	;; 
+
+
+ 5) Samsungdev_menu
+	echo
+	echo -n "Select Device(1-4): "
+	read device
+	while [[ $device -lt 1 || $device -gt 4 ]]; do
+		echo "Selection ERROR.."
+		echo -n "Select Device(1-4): "
+		read device
+	done
+	echo
+	case $device in
+	 1) echo "Vendor=Samsung, Device=Galaxy S"
+		_vendor="samsung"
+		_device="vibrant"
+		;;
+	 2) echo "Vendor=Samsung, Device=Nexus S"
+		_vendor="samsung"
+		_device="crespo"
+		;;
+	 3) echo "Vendor=Samsung, Device=Captivate"
+		_vendor="samsung"
+		_device="captivatemtd"
+		;;
+	 4) echo "Vendor=Samsung, Device=Vibrant"
+		_vendor="samsung"
+		_device="vibrantmtd"
+		;;
+	esac
+	;;
+ 6) echo "Vendor=Viewsonic, Device=G Tablet"
+	_vendor="nvidia"
+	_device="harmony"
+	;;
+ 7) echo "Vendor=ZTE, Device=Blade"
+	_vendor="zte"
+	_device="blade"
+	;;
+ 8) LGdev_menu
+	echo
+	echo -n "Select Device(1-2): "
+	read device
+	while [[ $device -lt 1 || $device -gt 2 ]]; do
+		echo "Selection ERROR.."
+		echo -n "Select Device(1-2): "
+		read device
+	done
+	echo
+	case $device in
+	 1) echo "Vendor=LG, Device=G2x"
+		_vendor="lge"
+		_device="p999"
+		;;
+	 2) echo "Vendor=LG, Device=Optimus 2X"
+		_vendor="lge"
+		_device="p990"
+		;;
+	esac
+	;; 
+ 9) echo "Vendor=Barnes & Noble, Device=Nook Color"
+	_vendor="bn"
+	_device="encore"
+	;;
+ 10) echo "For building Emulator images, use the build.sh script from your desktop"
+	echo "Vendor=Generic, Device=Emulator"
+		_vendor="generic"
+		_device="generic"
+;;
+esac
 
 
 echo
